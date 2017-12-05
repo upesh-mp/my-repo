@@ -1,8 +1,36 @@
 from random import randint
 def main():
-    currentRole = rollDice();
-    print(currentRole)
-    evaluateScore(currentRole)'
+    totalPoints = 0;
+    rollAgain = False;
+    while(True):
+        if(rollAgain == False):
+            print("\n 1. Roll Dice\n2. Stop");
+            option = input("Enter your choice");
+        else:
+            print("Rolling Again as all 5 scored");
+            option = 1;
+            rollAgain = False;
+        if(option == 1):
+            currentRole = rollDice();
+            print(currentRole)  
+            currentPoints = evaluateScore(currentRole);
+            totalPoints = totalPoints+ currentPoints;
+            if(checkAllFiveScored(currentRole) == True):
+                rollAgain = True;
+            if(currentPoints == -2):
+                print("You WON");
+            elif(currentPoints == -1):
+                print("You LOST");
+            elif(currentPoints == 0):
+                print("YOU ARE WIMPED OUT");
+                totalPoints = 0;
+            else:
+                print "TotalPoints = "+ str(totalPoints);
+        else:
+            break;
+            
+          
+    
 def rollDice():
     roll = [];
     roll.append(randint(1, 6))
@@ -12,19 +40,56 @@ def rollDice():
     roll.append(randint(1, 6))
     return roll;
 
+def checkAllFiveScored(currentRole):
+    if(checkFrieghtTrain(currentRole) > 0):
+        return True;
+    points,flashNum = checkForFlash(currentRole);
+    print(str(flashNum))
+    if(points >0):
+        for i in currentRole:
+            print(str(i));
+            if(i!=flashNum):
+                if(i != 1 and i !=5):
+                    return False;
+        return True;
+    for i in currentRole:
+        if( i!=1 and i!=5):
+            return False;
+    return True;
 def evaluateScore(currentRole):
     autoWin = checkIfAutoWin(currentRole);
-    
-    if(!autoWin):
+    points = 0;
+    if(autoWin == False):
         autoLose = checkIfAutoLose(currentRole);
         if(autoLose):
-            print("You Lost");
+            
+            return -2;
         else:
-            frieghtPoints = checkFrieghtTrain(currentRole)
+            points = checkFrieghtTrain(currentRole)
+            print("Frieght: "+ str(points))
+            if(points == 0):
+                points, flashNum = checkForFlash(currentRole);
+                print("FlashPoints :" + str(points))
+                if(points == 0):
+                    points = count5and1Points(currentRole, False);
+                    print("fiveAndOnePoints:"+ str(points));
             
     else:
-        print("You WON")
+        
+        return -1;
+    return points;
 
+def count5and1Points(currentRole, wildCardUsed):
+    totalPoints = 0;
+    if(currentRole[0] == 3 and wildCardUsed == False):
+        currentRole[0] = 1;
+    for i in currentRole:
+        if(i==5):
+            totalPoints = totalPoints +5;
+        if(i==1):
+            totalPoints = totalPoints +10;
+    return totalPoints;
+    
 def checkFrieghtTrain(currentRole):
     allFive = True;
     allFour = True;
@@ -43,14 +108,68 @@ def checkFrieghtTrain(currentRole):
     if(allTwo):
         return 200;
     return 0;
+
+def checkForFlash(currentRole):
+    twoCount = 0;
+    threeCount = 0;
+    fourCount = 0;
+    fiveCount = 0;
+    sixCount = 0;
+    oneCount = 0;
+    wildCardPresent = False;
+    if(currentRole[0] == 3):
+        wildCardPresent = True;    
+    for i in currentRole:
+        if(i==1):
+            oneCount = oneCount+1;
+        if(i==2):
+            twoCount = twoCount+1;
+        if(i==3):
+            threeCount = threeCount+1;
+        if(i==4):
+            fourCount = fourCount+1;
+        if(i==5):
+            fiveCount = fiveCount+1;
+        if(i==6):
+            sixCount = sixCount+1;
+    wildCardUsed = False;
+    if(oneCount == 2 and wildCardPresent):
+        wildCardUsed = True;
+        oneCount =3;
+    if(fourCount == 2 and wildCardPresent):
+        wildCardUsed = True;
+        fourCount =3;
+    if(sixCount == 2 and wildCardPresent):
+        wildCardUsed = True;
+        sixCount =3;
+    if(fiveCount == 2 and wildCardPresent):
+        wildCardUsed = True;
+        fiveCount =3;
+    if(twoCount == 2 and wildCardPresent):
+        wildCardUsed = True;
+        twoCount =3;
+       
+    if(oneCount >= 3):
+        return 100, 1;
+    if(twoCount >= 3):
+        return 200 + count5and1Points(currentRole,wildCardUsed), 2;
+    if(threeCount >= 3):
+        return 300+ count5and1Points(currentRole,wildCardUsed), 3;
+    if(fourCount >= 3):
+        return 400+ count5and1Points(currentRole,wildCardUsed), 4;
+    if(fiveCount >= 3):
+        return 500, 5;
+    if(sixCount >= 3):
+        return 600+ count5and1Points(currentRole,wildCardUsed), 6;
+    return 0,0;
 def checkIfAutoWin(currentRole):
     for i in currentRole:
         if(i!= 6):
-            return false;
+            return False;
     return true;
 def checkIfAutoLose(currentRole):
     for i in currentRole:
         if(i!= 1):
-            return false;
+            return False;
     return true;
 main();
