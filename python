@@ -1,0 +1,56 @@
+from random import randint
+def main():
+    currentRole = rollDice();
+    print(currentRole)
+    evaluateScore(currentRole)'
+def rollDice():
+    roll = [];
+    roll.append(randint(1, 6))
+    roll.append(randint(1, 6))
+    roll.append(randint(1, 6))
+    roll.append(randint(1, 6))
+    roll.append(randint(1, 6))
+    return roll;
+
+def evaluateScore(currentRole):
+    autoWin = checkIfAutoWin(currentRole);
+    
+    if(!autoWin):
+        autoLose = checkIfAutoLose(currentRole);
+        if(autoLose):
+            print("You Lost");
+        else:
+            frieghtPoints = checkFrieghtTrain(currentRole)
+            
+    else:
+        print("You WON")
+
+def checkFrieghtTrain(currentRole):
+    allFive = True;
+    allFour = True;
+    allTwo = True;
+    for i in currentRole:
+        if(i !=5):
+            allFive = False;
+        if(i !=4):
+            allFour = False;
+        if(i !=2):
+            allTwo = False;
+    if(allFive):
+        return 500;
+    if(allFour):
+        return 400;
+    if(allTwo):
+        return 200;
+    return 0;
+def checkIfAutoWin(currentRole):
+    for i in currentRole:
+        if(i!= 6):
+            return false;
+    return true;
+def checkIfAutoLose(currentRole):
+    for i in currentRole:
+        if(i!= 1):
+            return false;
+    return true;
+main();
