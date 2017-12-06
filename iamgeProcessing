@@ -1,11 +1,70 @@
+import math
 from PIL import Image
 
-im = Image.open("Disco.bmp")    #open an image
+def multiply(Y,X):
+    result = [[0,0]];
+    for i in range(len(X)):
+       for j in range(len(Y[0])):
+           for k in range(len(Y)):
+               result[i][j] += X[i][k] * Y[k][j]
+    return result;
+img = Image.open("Disco.bmp")    #open an image
+im = Image.open('Disco.bmp').convert('L')
 print(im.size)                  #retrieve the length & width as a tuple
-print(im.getpixel((499,341)))   #get the value of a pixel (for this project, a single number from 0 to 255)
-im.putpixel((499,341),0)        #change the value of a pixel (note: does not change the FILE, just the OBJECT, until saved)
-im.show()                       #display the image (probably...this sometimes doesn't work)
+(width,height) = im.size;
+i=0;j=0;
+#key = [[2,3],[5,20]]
+key = [[.8,-0.12],[.2,0.08]]
+while i<width:
+    j=0;
+    while j<height-1:
+        
+        pix = im.getpixel((i,j))
+        pix1=im.getpixel((i,j+1))
+        result = multiply(key,[[pix,pix1]])
+
+        im.putpixel((i,j),int(result[0][0]))
+        im.putpixel((i,j+1),int(result[0][1]))
+        j=j+1;
+    i=i+1;
+print(im.getpixel((28,1)))   #get the value of a pixel (for this project, a single number from 0 to 255)
+im.putpixel((0,0),0)        #change the value of a pixel (note: does not change the FILE, just the OBJECT, until saved)
                                 #look carefully for one black pixel in the bottom left of the R in "STAR"
+#im.show()
+im.save("DiscoModified.bmp")    #save the image object as a new file
+
+
+print result;
+'''PLEASE NOTE: for this project, all files have been modified to be grayscale images only, with one value for each
+pixel, from 0 to 255, defining its brightness.  The vast majority of images you find will be in RGB format, as you have
+learned before.  To convert an RGB image to a true grayscale image, use this code:
+
+im = Image.open("filename").convert("L")  #"L" is the shorthand for the format we are using
+im.save("new filename")
+'''
+
+
+
+from PIL import Image
+
+img = Image.open("Disco.bmp")    #open an image
+im = Image.open('Disco.bmp').convert('L')
+print(im.size)                  #retrieve the length & width as a tuple
+(width,height) = im.size;
+i=0;j=0;
+while i<width:
+    j=0;
+    while j<height:
+        
+        pix = im.getpixel((i,j))
+        pix = (pix +53 )%256;
+        im.putpixel((i,j),pix)
+        j=j+1;
+    i=i+1;
+print(im.getpixel((28,1)))   #get the value of a pixel (for this project, a single number from 0 to 255)
+im.putpixel((0,0),0)        #change the value of a pixel (note: does not change the FILE, just the OBJECT, until saved)
+                                #look carefully for one black pixel in the bottom left of the R in "STAR"
+im.show()
 im.save("DiscoModified.bmp")    #save the image object as a new file
 
 '''PLEASE NOTE: for this project, all files have been modified to be grayscale images only, with one value for each
