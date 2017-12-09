@@ -266,13 +266,42 @@ class MyApplication(arcade.Window):
             self.person.delta_x = MOVEMENT_SPEED
         elif key == arcade.key.SPACE:
             self.person.delta_y = MOVEMENT_SPEED
+            self.checkIfCollidedWithRectangle(True)
         elif key == arcade.key.A:
             self.rectangle2.delta_x = -MOVEMENT_SPEED
         elif key == arcade.key.D:
             self.rectangle2.delta_x = MOVEMENT_SPEED
-
+        self.checkIfCollidedWithRectangle(False);
+        self.checkIfFlagTouched();
+        self.checkIfCollidedWithTriangle();
             # self.person.jump()
 
+    def checkIfCollidedWithRectangle(self,isJump):
+        if(isJump):
+            if(self.person.face_x+15 >= self.rectangle2.x-50 and self.person.face_x+15 <= self.rectangle2.x-50+self.rectangle2.width):
+                if(self.person.face_y+64+MOVEMENT_SPEED > (self.rectangle2.y-self.rectangle2.height)):
+                    print("collided at rectangle 2");
+                 #   self.setup();
+            if(self.person.face_x+15 >= self.rectangle3.x-50 and self.person.face_x+15 <= self.rectangle3.x-50+self.rectangle3.width):
+                if(self.person.face_y+64+MOVEMENT_SPEED > (self.rectangle3.y-self.rectangle3.height)):
+                    print("collided at rectangle 2");
+                   # self.setup();
+        else:
+            if(self.person.face_x+15 >= self.rectangle2.x-50 and self.person.face_x+15 <= self.rectangle2.x-50+self.rectangle2.width):
+                if(self.person.face_y+64 > (self.rectangle2.y-self.rectangle2.height)):
+                    print("collided at rectangle 2");
+                  #  self.setup();
+            if(self.person.face_x+15 >= self.rectangle3.x-50 and self.person.face_x+15 <= self.rectangle3.x-50+self.rectangle3.width):
+                if(self.person.face_y+64 > (self.rectangle3.y-self.rectangle3.height)):
+                    print("collided at rectangle 2");
+                 #   self.setup();
+    def checkIfCollidedWithTriangle(self):
+        if(self.person.right_leg > self.triangle1.x and
+           self.person.right_leg < self.triangle3.x+60 ):
+            self.setup();
+    def checkIfFlagTouched(self):
+        if(self.person.face_x+15 >= self.flag.x ):
+            self.setup();
     def on_key_release(self, key, modifiers):
         """
         Called when the user presses a mouse button.
